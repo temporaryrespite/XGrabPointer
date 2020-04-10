@@ -18,8 +18,10 @@ static Window create_win(Display *dpy)
 
     mask.deviceid = XIAllMasterDevices;
     mask.mask_len = XIMaskLen(XI_RawMotion);
-    mask.mask = calloc(mask.mask_len, sizeof(char));
-    memset(mask.mask, 0, mask.mask_len);
+    mask.mask = calloc(mask.mask_len, sizeof(unsigned char));
+    //memset(mask.mask, 0, mask.mask_len);
+    explicit_bzero(mask.mask, mask.mask_len);
+
     XISetMask(mask.mask, XI_RawMotion);
 
     XISelectEvents(dpy, DefaultRootWindow(dpy), &mask, 1);
