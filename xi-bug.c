@@ -77,7 +77,7 @@ int main (int argc, char **argv)
         return -1;
     }
 
-    win = create_win(dpy);
+    win = create_win(dpy); //yes this is still necessary!
 
     while(1)
     {
@@ -88,13 +88,19 @@ int main (int argc, char **argv)
         if (ev.type == MapNotify) {
             XGrabPointer(dpy,
                 win
-                //DefaultRootWindow(dpy)
+                //DefaultRootWindow(dpy) // no change when using this
                 , True, 0, GrabModeAsync,
                     GrabModeAsync,
-                    win
-                    //DefaultRootWindow(dpy)
+                    //win
+                    DefaultRootWindow(dpy) // needing this to unconstrain
                     , None, CurrentTime);
+            XGrabButton(dpy, AnyButton, AnyModifier, win, True, 0, GrabModeAsync, GrabModeAsync, DefaultRootWindow(dpy), None);
+            printf("grabbed\n");
         }
+        //if ((ev.type == KeyPress)||(cookie->type == KeyPress)) { // TODO: no idea how to make this work, Alt+F4 on 'win' is needed, or C-c on terminal(after an alt+tab)
+        //  // types like KeyPress and MapNotify are listed in /usr/include/X11/X.h
+        //  break;
+        //}
 
         if (cookie->type != GenericEvent ||
             cookie->extension != xi_opcode ||
